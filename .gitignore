@@ -1,0 +1,29 @@
+# Binaries for programs and plugins
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+
+# Output of the Go coverage tool
+*.out
+
+# Environment files
+.env
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+
+# IDE and editor-specific files
+.idea/
+.vscode/
+*.iml
+
+# Dependency directories (optional if vendoring is not used)
+vendor/
+
