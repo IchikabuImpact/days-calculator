@@ -70,4 +70,3 @@ func main() {
 	fmt.Printf("Server started at http://localhost:%s\n", port)
 	http.ListenAndServe(":"+port, nil)
 }
-
