@@ -1,59 +1,130 @@
-# Days Ago
+# Days Calculator
 
-A simple API to calculate the date N days ago, implemented in Go and containerized with Docker.
-
-## Features
-
-- Calculate the date N days ago via a REST API.
-- Lightweight and efficient implementation using Go.
-- Configurable server port via `.env` file.
-- Dockerized for ease of deployment.
+Go 製のシンプルなユーティリティです。**N 日前**の日付を *CLI* でも *REST API* でも取得できます。
 
 ---
 
-## Prerequisites
+## 特長
 
-- Docker installed on your system.
-- A `.env` file in the project root with the following content:
-PORT=8089
+- **CLI モード** : `-days` フラグまたは位置引数で即座に日付を出力。
+- **HTTP API** : `/api/calculate?days=N` で JSON を返却。
+- `.env` でポートを切り替え可能（既定 `8080`）。
+- Docker イメージ提供でどこでも動作。
 
+---
 
-## Getting Started
+## 動作環境
 
-### 1. Clone the Repository
-Clone the repository to your local machine.
+| 必須     | バージョン例                  |
+| ------ | ----------------------- |
+| Go     | 1.22 以上                 |
+| Docker | 24.x 以上 (API だけ使う場合は任意) |
+
+---
+
+## 1️⃣ CLI で使う
+
+> **ポイントは 3 行**：
+>
+> 1. **ビルド**（拡張子は OS に合わせる）
+> 2. ``** / **``** or **`` を付けて実行
+> 3. 引数が無いと HTTP サーバーになる
+
+### ビルド & 実行（Unix/macOS）
 
 ```bash
-git clone <repository-url>
-cd days-calculator
+# プロジェクト直下
+# 実行ファイルを作る
+go build -o days_calculator ./app
+
+# 7 日前
+./days_calculator -days 7
+./days_calculator 7    # 位置引数でも可
+```
+
+### ビルド & 実行（Windows PowerShell）
+
+```powershell
+# プロジェクト直下
+# .exe 拡張子が必要
+go build -o days_calculator.exe ./app
+
+# 7 日前
+.\days_calculator.exe -days 7
+
+# ビルドせずワンショット
+# (Unix でも同様)
+go run ./app 7
+```
+
+| オプション     | 動作                                   |
+| --------- | ------------------------------------ |
+| `-days N` | **N 日前** を表示                         |
+| 位置引数 `N`  | 同上。`-days` と同等                       |
+| （引数なし）    | HTTP サーバーを起動 (`PORT` 環境変数または `.env`) |
+| `-h`      | ヘルプを表示                               |
+
+---
+
+## 2️⃣ HTTP API を使う
+
+### Go バイナリで起動
+
+```bash
+# 引数なしで実行 → サーバーモード
+./days_calculator
+# => Server started at http://localhost:8080
+```
+
+### Docker で起動
+
+```bash
 docker build -t days-calculator .
 docker run --rm --env-file .env -p 8089:8089 days-calculator
-Server started at http://localhost:8089
+# => Server started at http://localhost:8089
 ```
 
-## Using the API
+`.env` の例:
 
-- You can use the API to calculate the date N days ago by sending a GET request to the /api/calculate endpoint.
+```env
+PORT=8089
+```
 
+### エンドポイント
 
-### Example Request
-curl "http://localhost:8089/api/calculate?days=2"
+| メソッド | パス               | クエリ         | 説明              |
+| ---- | ---------------- | ----------- | --------------- |
+| GET  | `/api/calculate` | `days` (整数) | **N 日前** の日付を返す |
 
-
-### Example Response
-{"date":"2024/12/21"}
-
-## Using the CLI
-
-In addition to the HTTP API, the tool can be run directly from the command line.
-Build and run the binary with a `-days` flag or a positional argument:
+#### リクエスト例
 
 ```bash
-go build -o days_calculator ./app/days_calculator.go
-./days_calculator -days 5   # using flag
-./days_calculator 3         # using positional argument
+curl "http://localhost:8089/api/calculate?days=2"
 ```
 
-Both commands output the date N days prior to today.
+#### レスポンス例
 
+```json
+{"date":"2024/12/21"}
+```
+
+---
+
+## 3️⃣ 開発 & テスト
+
+```bash
+# 依存関係取得
+go mod download
+
+# テストがある場合
+go test ./...
+```
+
+---
+
+## ライセンス
+
+MIT License  (詳細は `LICENSE` ファイル参照)
+
+---
 
