@@ -16,9 +16,13 @@ type Response struct {
 	Date string `json:"date"`
 }
 
-// calculateDate computes the date `daysAgo` days before today
+// now returns the current time. It is defined as a variable so tests can
+// override it for deterministic output.
+var now = time.Now
+
+// calculateDate computes the date `daysAgo` days before today.
 func calculateDate(daysAgo int) string {
-	currentDate := time.Now()
+	currentDate := now()
 	pastDate := currentDate.AddDate(0, 0, -daysAgo)
 	return pastDate.Format("2006/01/02")
 }
