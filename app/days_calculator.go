@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"net/http"
 	"os"
@@ -25,6 +26,32 @@ func dateNDaysAgo(daysAgo int) string {
 	currentDate := now()
 	pastDate := currentDate.AddDate(0, 0, -daysAgo)
 	return pastDate.Format("2006/01/02")
+}
+
+// runCLI parses command line arguments and returns the calculated date.
+// It expects either a -days flag or a positional argument providing the number
+// of days. When no arguments are supplied it returns an error.
+func runCLI(args []string) (string, error) {
+	fs := flag.NewFlagSet("days-calculator", flag.ContinueOnError)
+	days := fs.Int("days", -1, "number of days ago")
+	if err := fs.Parse(args); err != nil {
+		return "", err
+	}
+
+	var d int
+	if *days >= 0 {
+		d = *days
+	} else if fs.NArg() > 0 {
+		var err error
+		d, err = strconv.Atoi(fs.Arg(0))
+		if err != nil {
+			return "", fmt.Errorf("argument must be a valid integer")
+		}
+	} else {
+		return "", fmt.Errorf("no days provided")
+	}
+
+	return dateNDaysAgo(d), nil
 }
 
 // daysCalculatorHandler handles HTTP requests for the days calculator.
@@ -61,14 +88,14 @@ func main() {
 		port = "8080"
 	}
 
-	// If CLI arguments are provided, run in CLI mode
+	// If CLI arguments are provided, run in CLI mode using the flag package
 	if len(os.Args) > 1 {
-		daysAgo, err := strconv.Atoi(os.Args[1])
+		result, err := runCLI(os.Args[1:])
 		if err != nil {
-			fmt.Println("Error: Argument must be a valid integer")
+			fmt.Println("Error:", err)
 			os.Exit(1)
 		}
-		fmt.Println(dateNDaysAgo(daysAgo))
+		fmt.Println(result)
 		return
 	}
 

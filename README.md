@@ -43,4 +43,17 @@ curl "http://localhost:8089/api/calculate?days=2"
 ### Example Response
 {"date":"2024/12/21"}
 
+## Using the CLI
+
+In addition to the HTTP API, the tool can be run directly from the command line.
+Build and run the binary with a `-days` flag or a positional argument:
+
+```bash
+go build -o days_calculator ./app/days_calculator.go
+./days_calculator -days 5   # using flag
+./days_calculator 3         # using positional argument
+```
+
+Both commands output the date N days prior to today.
+
 
