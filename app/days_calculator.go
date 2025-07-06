@@ -20,15 +20,15 @@ type Response struct {
 // override it for deterministic output.
 var now = time.Now
 
-// calculateDate computes the date `daysAgo` days before today.
-func calculateDate(daysAgo int) string {
+// dateNDaysAgo returns the date `daysAgo` days prior to today.
+func dateNDaysAgo(daysAgo int) string {
 	currentDate := now()
 	pastDate := currentDate.AddDate(0, 0, -daysAgo)
 	return pastDate.Format("2006/01/02")
 }
 
-// handleDaysCalculator handles HTTP requests for the days calculator
-func handleDaysCalculator(w http.ResponseWriter, r *http.Request) {
+// daysCalculatorHandler handles HTTP requests for the days calculator.
+func daysCalculatorHandler(w http.ResponseWriter, r *http.Request) {
 	daysQuery := r.URL.Query().Get("days")
 	if daysQuery == "" {
 		http.Error(w, "Missing 'days' parameter", http.StatusBadRequest)
@@ -41,7 +41,7 @@ func handleDaysCalculator(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result := calculateDate(daysAgo)
+	result := dateNDaysAgo(daysAgo)
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(Response{Date: result}); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -68,12 +68,12 @@ func main() {
 			fmt.Println("Error: Argument must be a valid integer")
 			os.Exit(1)
 		}
-		fmt.Println(calculateDate(daysAgo))
+		fmt.Println(dateNDaysAgo(daysAgo))
 		return
 	}
 
 	// Start the HTTP server
-	http.HandleFunc("/api/calculate", handleDaysCalculator)
+	http.HandleFunc("/api/calculate", daysCalculatorHandler)
 	fmt.Printf("Server started at http://localhost:%s\n", port)
 	http.ListenAndServe(":"+port, nil)
 }

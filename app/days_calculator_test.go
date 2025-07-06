@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func TestCalculateDate(t *testing.T) {
+func TestDateNDaysAgo(t *testing.T) {
 	// Save original now function and restore after test
 	originalNow := now
 	defer func() { now = originalNow }()
@@ -24,9 +24,9 @@ func TestCalculateDate(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		got := calculateDate(tt.daysAgo)
+		got := dateNDaysAgo(tt.daysAgo)
 		if got != tt.want {
-			t.Errorf("calculateDate(%d) = %s, want %s", tt.daysAgo, got, tt.want)
+			t.Errorf("dateNDaysAgo(%d) = %s, want %s", tt.daysAgo, got, tt.want)
 		}
 	}
 }
