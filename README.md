@@ -29,6 +29,7 @@ cd days-calculator
 docker build -t days-calculator .
 docker run --rm --env-file .env -p 8089:8089 days-calculator
 Server started at http://localhost:8089
+```
 
 ## Using the API
 
