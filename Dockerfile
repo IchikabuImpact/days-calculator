@@ -17,7 +17,7 @@ RUN go mod tidy
 RUN go build -o days_calculator ./app/days_calculator.go
 
 # ポート公開 (デフォルトの8080)
-EXPOSE 8080
+EXPOSE 8089
 
 # アプリケーション実行
 CMD ["/app/days_calculator"]
