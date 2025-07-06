@@ -38,7 +38,10 @@ func handleDaysCalculator(w http.ResponseWriter, r *http.Request) {
 	}
 
 	result := calculateDate(daysAgo)
-	json.NewEncoder(w).Encode(Response{Date: result})
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(Response{Date: result}); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 func main() {
