@@ -1,4 +1,4 @@
-# Days Calculator
+# Days Ago
 
 A simple API to calculate the date N days ago, implemented in Go and containerized with Docker.
 
