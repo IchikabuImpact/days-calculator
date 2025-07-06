@@ -1,5 +1,5 @@
 # ベースイメージ
-FROM golang:1.23-alpine
+FROM golang:1.24-alpine
 
 # 必要なパッケージをインストール
 RUN apk add --no-cache gcc musl-dev
